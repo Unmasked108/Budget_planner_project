@@ -1,0 +1,116 @@
+body{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+.navbar {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: flex-start; /* Align items to the left */
+    align-items: center;
+    position: fixed; /* Change to fixed */
+    z-index: 1001; /* Ensure navbar is above the slide-out panel */
+    width: 100%; /* Make navbar full width */
+    box-sizing: border-box; /* Include padding in width calculation */
+    left: 0; /* Add this */
+    top: 0; /* Add this */
+  }
+  
+  .navbar-title {
+    color: #333;
+    font-size: 1.5rem;
+    font-weight: bold;
+    text-align: center;
+    margin: 0 auto; /* Center the title */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  
+  .navbar-icon {
+    margin-right: 16px; /* Adjust spacing between icon and title */
+    cursor: pointer; /* Show pointer on hover */
+  }
+  
+  h2 {
+    display: flex;
+    align-items: center;
+  }
+  
+  .slide-out-panel {
+    position: fixed;
+    top: 0; /* Start from the top of the viewport */
+    left: -250px;
+    width: 250px;
+    height: 100%; /* Change to full height */
+    background-color: black; /* Changed background color to black */
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    transition: left 0.3s ease-in-out;
+    z-index: 1000;
+    margin-top: 60px; /* Add margin to push panel below navbar */
+  }
+
+  .slide-out-panel.slide-out {
+    left: 0;
+  }
+
+  .slide-out-content {
+    padding: 20px;
+    color: white; /* Changed font color to white */
+    margin-top: 20px; /* Add margin to push content away from top */
+  }
+
+  .slide-out-content h3 {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: white; /* Changed color to white */
+  }
+
+  .nav {
+    font-size: 1.5rem;
+    margin-bottom: 20px;
+    color: white; /* Changed color to white */
+    font-weight: bold;
+    padding-bottom: 10px;
+    border-bottom: 2px solid #e0e0e0;
+  }
+
+  .slide-out-content p.edit-col {
+    cursor: pointer;
+    padding: 10px 0;
+    border-bottom: 1px solid #e0e0e0;
+    transition: background-color 0.2s ease;
+    color: white; /* Changed color to white */
+  }
+
+  .slide-out-content p.edit-col:hover {
+    background-color: #333; /* Darker hover color for better contrast */
+  }
+
+  /* Navbar styles */
+
+
+  .toggle-button-row {
+    cursor: pointer;
+    margin-right: 15px;
+    z-index: 1002; /* Ensure the icon is above both navbar and slide-out panel */
+    background-color: white;
+    border-radius: 50%;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+  }
+
+ 
+
+  /* Font Awesome icon styles */
+  .fa-bars {
+    font-size: 1.2rem;
+    color: red; /* Changed icon color to red */
+  }

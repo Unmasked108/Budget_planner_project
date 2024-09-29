@@ -1,0 +1,20 @@
+<div class="navbar">
+    <div class="toggle-button-row" (click)="toggleSideOut()">
+        <i class="fa-sharp fa-solid fa-bars"></i>
+    </div>
+    <h2 class="navbar-title">
+        Code Fusion
+    </h2>
+</div>
+
+<div class="slide-out-panel" [class.slide-out]="isSideOut">
+    <div class="slide-out-content">
+        <h3 class="nav">Budget Planner</h3>
+        <p class="edit-col" (click)="onDash()">Dashboard</p>
+        <p class="edit-col" (click)="onProfile()">Profile</p>
+        <p class="edit-col" (click)="onHistory()">Prev History</p>
+        <p class="edit-col" (click)="onLogout()">Logout</p>
+        
+    </div>
+
+</div>

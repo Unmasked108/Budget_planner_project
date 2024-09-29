@@ -1,0 +1,129 @@
+.login-container {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f3f3f3;
+}
+
+.background-image {
+  flex: 1;
+  background-image: url('https://images.unsplash.com/photo-1554224155-6726b3ff858f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2340&q=80');
+  background-size: cover;
+  background-position: center;
+  margin: 0;
+  padding: 0;
+}
+
+.login-form-container {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px;
+  background-color: #ffffff;
+}
+
+.login-form {
+  width: 100%;
+  max-width: 400px;
+}
+
+h1 {
+  color: #484848;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 32px;
+  font-weight: 700;
+}
+
+h2 {
+  color: #484848;
+  margin-bottom: 24px;
+  text-align: center;
+  font-size: 24px;
+  font-weight: 700;
+}
+
+.form-group {
+  margin-bottom: 25px;
+}
+
+label {
+  display: block;
+  margin-bottom: 8px;
+  color: #006666;
+  font-weight: 500;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+input[type="email"],
+input[type="password"],
+input[type="text"] {
+  width: 100%;
+  padding: 14px;
+  border: 1px solid #B0B0B0;
+  border-radius: 8px;
+  font-size: 16px;
+  transition: border-color 0.3s ease;
+  background-color: #ffffff;
+}
+
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="text"]:focus {
+  outline: none;
+  border-color: #000000;
+  box-shadow: 0 0 0 1px #000000;
+}
+
+button {
+  width: 100%;
+  padding: 14px;
+  background-color: #FF5A5F;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+button:hover {
+  background-color: #FF3B3F;
+}
+
+button:active {
+  transform: none;
+}
+
+.error-message {
+  color: #c73636; /* Red error message */
+  margin-top: 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: 400;
+}
+
+.signup-link, .login-link {
+  margin-top: 24px;
+  text-align: center;
+  color: #222222;
+  font-size: 14px;
+}
+
+.signup-link span, .login-link span {
+  color: #FF5A5F;
+  cursor: pointer;
+  font-weight: 600;
+  text-decoration: underline;
+}
+
+.signup-link span:hover, .login-link span:hover {
+  color: #FF3B3F;
+}
+
+body {
+  background-color: #ffffff;
+}
