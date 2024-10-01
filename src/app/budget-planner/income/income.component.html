@@ -72,11 +72,10 @@
                 </tr>
             </tbody>
         </table>
-        <div class="input-form">
-            <button class="btn btn-primary" (click)="onBack()">Back</button>
-            <div class="form-group">
-            </div>
-            <button class="btn btn-primary" (click)="saveForm()">Save</button>
+        <div class="button-group">
+            <button (click)="onBack()" class="btn btn-secondary">Back</button>
+            <button (click)="saveForm()" class="btn btn-primary">Save</button>
+            <button (click)="onGetPreviousIncome()" class="btn btn-info">Get Previous Income</button>
         </div>
     </div>
 </div>

@@ -110,3 +110,38 @@ body {
     width: 800px;
     margin: 0 auto;
 }
+
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 20px;
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.3s ease, opacity 0.3s ease;
+    font-size: 16px;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: #ffffff;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #008080, #80ced6);
+    color: #ffffff;
+}
+
+.btn-info {
+    background-color: #17a2b8;
+    color: #ffffff;
+}
+
+.btn:hover {
+    opacity: 0.9;
+}

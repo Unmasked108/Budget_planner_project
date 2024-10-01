@@ -1,0 +1,61 @@
+<div class="navbar">
+    <h2>Previous Incomes</h2>
+</div>
+
+<div class="container">
+    <h3>Income List</h3>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Month</th>
+                <th>Source of Income</th>
+                <th>Amount</th>
+                <th>Investments</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let income of incomes">
+                <td>{{ income.month }}</td>
+                <td>{{ income.source }}</td>
+                <td>${{ income.amount }}</td>
+                <td>{{ income.investments }}</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <div class="filter-container">
+        <label for="monthSelect">Select Month: </label>
+        <select id="monthSelect" [(ngModel)]="selectedMonth" (change)="filterIncomes()">
+            <option value="">All Months</option>
+            <option *ngFor="let month of months" [value]="month">{{ month }}</option>
+        </select>
+    </div>
+
+    <div *ngIf="selectedMonth && filteredIncomes.length > 0">
+        <h3>Filtered Income for {{ selectedMonth }}</h3>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Source of Income</th>
+                    <th>Amount</th>
+                    <th>Investments</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let income of filteredIncomes">
+                    <td>{{ income.source }}</td>
+                    <td>${{ income.amount }}</td>
+                    <td>{{ income.investments }}</td>
+                </tr>
+            </tbody>
+        </table>
+        <div class="total-income">
+            <strong>Total Income for {{ selectedMonth }}: ${{ totalMonthlyIncome }}</strong>
+        </div>
+    </div>
+
+    <div class="button-container">
+        <button class="btn" (click)="goBack()">Previous</button>
+        <button class="btn" (click)="goToDashboard()">Back to Dashboard</button>
+    </div>
+</div>

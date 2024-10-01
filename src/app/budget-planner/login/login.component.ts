@@ -2,13 +2,13 @@ import { Component } from '@angular/core';
 import { FormBuilder , Validators} from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
-
+import { HttpClient } from '@angular/common/http';
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [CommonModule,ReactiveFormsModule],
+  imports: [CommonModule,ReactiveFormsModule,RouterModule],
   templateUrl: './login.component.html',
   styleUrl: './login.component.css'
 })
@@ -18,10 +18,13 @@ registerForm : any;
 activeForm : 'login' | 'register' = 'login';
 constructor(private fb: FormBuilder,
   private router: Router,
-  private snackBar: MatSnackBar
+  private snackBar: MatSnackBar,
+  private http: HttpClient
 ){}
 
 ngOnInit(): void {
+  console.log("Login Component Loaded");
+
   this.loginForm = this.fb.group({
     email: ['', [Validators.required, Validators.email]],
     password: ['', [Validators.required, Validators.minLength(6)]]
@@ -39,26 +42,38 @@ toggleForm(form: 'login' | 'register') {
 
 login() {
   if (this.loginForm.valid) {
-    console.log("Login info==>", this.loginForm.value);
-    this.router.navigate(['/budget-planner/dashboard']);
-  }else{
-    this.snackBar.open('Invalid form inputs','Close',{duration: 3000});
+    this.http.post('http://localhost:3000/api/users/login', this.loginForm.value).subscribe(
+      (response: any) => {
+        console.log('Login successful:', response);
+        localStorage.setItem('token', response.token);
+        this.router.navigate(['/budget-planner/dashboard']);
+      },
+      error => {
+        console.error('Login error:', error);
+        this.snackBar.open('Invalid credentials', 'Close', { duration: 3000 });
+      }
+    );
+  } else {
+    this.snackBar.open('Invalid form inputs', 'Close', { duration: 3000 });
   }
 }
+
 
 register() {
   if (this.registerForm.valid) {
-    console.log("Register info==>", this.registerForm.value);
-    setTimeout(() => {
-      window.location.reload();
-    }, 2000);
-    this.router.navigate(['/budget-planner/login']);
-  }else{
-    this.snackBar.open('Invalid form inputs','Close',{duration: 3000});
+    this.http.post('http://localhost:3000/api/users/register', this.registerForm.value).subscribe(
+      response => {
+        console.log('Registration successful:', response);
+        this.snackBar.open('Registration successful', 'Close', { duration: 3000 });
+        this.toggleForm('login');
+      },
+      error => {
+        console.error('Registration error:', error);
+        this.snackBar.open('Registration failed', 'Close', { duration: 3000 });
+      }
+    );
+  } else {
+    this.snackBar.open('Invalid form inputs', 'Close', { duration: 3000 });
   }
 }
-
-
-
-
 }
