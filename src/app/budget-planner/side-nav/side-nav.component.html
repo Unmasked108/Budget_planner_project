@@ -1,20 +1,32 @@
-<div class="navbar">
-    <div class="toggle-button-row" (click)="toggleSideOut()">
-        <i class="fa-sharp fa-solid fa-bars"></i>
-    </div>
-    <h2 class="navbar-title">
-        Code Fusion
-    </h2>
+<nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+  <div class="container-fluid">
+    <button class="navbar-toggler animate__animated" type="button" (click)="toggleSideOut()" data-bs-toggle="tooltip" data-bs-placement="right" title="Toggle Menu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <a class="navbar-brand animate__animated animate__bounce" href="#">Code Fusion</a>
+    <div class="navbar-spacer"></div>
+  </div>
+</nav>
+
+<div class="sidebar animate__animated" [ngClass]="{'show animate__slideInLeft': isSideOut, 'animate__slideOutLeft': !isSideOut}">
+  <div class="sidebar-content">
+    <button class="close-sidebar animate__animated animate__pulse" (click)="toggleSideOut()">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <h3 class="sidebar-header animate__animated animate__fadeIn">Budget Planner</h3>
+    <ul class="nav flex-column">
+      <li class="nav-item"><a class="nav-link animate__animated animate__fadeInLeft" (click)="onDash()" data-bs-toggle="popover" data-bs-content="View your dashboard">Dashboard</a></li>
+      <li class="nav-item"><a class="nav-link animate__animated animate__fadeInLeft" (click)="onProfile()" data-bs-toggle="popover" data-bs-content="Manage your profile">Profile</a></li>
+      <li class="nav-item"><a class="nav-link animate__animated animate__fadeInLeft" (click)="onHistory()" data-bs-toggle="popover" data-bs-content="View previous history">Prev History</a></li>
+      <li class="nav-item"><a class="nav-link animate__animated animate__fadeInLeft" (click)="onLogout()" data-bs-toggle="popover" data-bs-content="Log out of your account">Logout</a></li>
+    </ul>
+  </div>
 </div>
 
-<div class="slide-out-panel" [class.slide-out]="isSideOut">
-    <div class="slide-out-content">
-        <h3 class="nav">Budget Planner</h3>
-        <p class="edit-col" (click)="onDash()">Dashboard</p>
-        <p class="edit-col" (click)="onProfile()">Profile</p>
-        <p class="edit-col" (click)="onHistory()">Prev History</p>
-        <p class="edit-col" (click)="onLogout()">Logout</p>
-        
-    </div>
+<div class="overlay animate__animated" [ngClass]="{'show animate__fadeIn': isSideOut, 'animate__fadeOut': !isSideOut}" (click)="toggleSideOut()"></div>
 
-</div>
+<!-- Add these lines at the end of your body tag -->
+<!-- <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script> -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script> -->
+<!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/tether/1.4.7/js/tether.min.js"></script> -->

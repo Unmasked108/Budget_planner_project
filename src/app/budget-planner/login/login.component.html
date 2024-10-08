@@ -3,20 +3,27 @@
   <div class="login-form-container">
     <div class="login-form">
       <h1>Budget Planner</h1>
+      
+      <!-- Login Form -->
       <form *ngIf="activeForm === 'login'" [formGroup]="loginForm" (ngSubmit)="login()">
         <h2>Welcome Back</h2>
         <div class="form-group">
           <input type="email" formControlName="email" placeholder="Email" required>
         </div>
-        <div class="form-group">
-          <input type="password" formControlName="password" placeholder="Password" required>
+        <div class="form-group password-group">
+          <input [type]="showPassword ? 'text' : 'password'" formControlName="password" placeholder="Password" required>
+          <i [ngClass]="showPassword ? 'fa fa-eye-slash' : 'fa fa-eye'" (click)="togglePasswordVisibility()"></i>
         </div>
         <button type="submit">Log in</button>
+        <p class="forgot-password-link">
+          <span (click)="toggleForm('forgotPassword')">Forgot Password?</span>
+        </p>
         <p class="signup-link">Don't have an account? 
           <span (click)="toggleForm('register')">Sign up</span>
         </p>
       </form>
 
+      <!-- Register Form -->
       <form *ngIf="activeForm === 'register'" [formGroup]="registerForm" (ngSubmit)="register()">
         <h2>Create an Account</h2>
         <div class="form-group">
@@ -32,6 +39,30 @@
         <p class="login-link">Already have an account? 
           <span (click)="toggleForm('login')">Log in</span>
         </p>
+      </form>
+
+      <!-- Forgot Password - Email Form -->
+      <form *ngIf="activeForm === 'forgotPassword'" [formGroup]="forgotPasswordForm" (ngSubmit)="submitForgotPassword()">
+        <h2>Reset Password</h2>
+        <div class="form-group">
+          <input type="email" id="register-email" name="register-email" formControlName="email" placeholder="Email" required>
+                  </div>
+        <button type="submit">Next</button>
+        <p class="login-link">Remember your password? 
+          <span (click)="toggleForm('login')">Log in</span>
+        </p>
+      </form>
+
+      <!-- Reset Password Form -->
+      <form *ngIf="activeForm === 'resetPassword'" [formGroup]="resetPasswordForm" (ngSubmit)="resetPassword()">
+        <h2>Set New Password</h2>
+        <div class="form-group">
+          <input type="password" formControlName="newPassword" placeholder="New Password" required>
+        </div>
+        <div class="form-group">
+          <input type="password" formControlName="confirmPassword" placeholder="Confirm Password" required>
+        </div>
+        <button type="submit">Save New Password</button>
       </form>
     </div>
   </div>

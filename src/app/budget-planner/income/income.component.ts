@@ -17,20 +17,10 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 export class IncomeComponent {
   incomeForm: any;
   selectedMonth: any;
-  januaryIncomes: any[] = [
-    // {source: 'Salary', amount: 5000 ,investment: '401(k)'},
-    // {source: 'Freelancing', amount: 1000 ,investment: 'Stocks'},
-  ];
+  januaryIncomes: any[] = [];
 
-  februaryIncomes: any[] = [
-    // {source: 'Salary', amount: 5000 ,investment: '401(k)'},
-    // {source: 'Rental Property', amount: 1000 ,investment: 'Real Estate'},
-  ];
-  marchIncomes: any[] = [
-    // {source: 'Salary', amount: 5000 ,investment: '401(k)'},
-    // {source: 'Freelancing', amount: 1000 ,investment: 'Stocks'},
-    // {source: 'Rental Property', amount: 1000 ,investment: 'Real Estate'},
-  ];
+  februaryIncomes: any[] = [];
+  marchIncomes: any[] = [];
 
   monthSelected: boolean = false;
   successMessage: string = '';
@@ -53,14 +43,13 @@ export class IncomeComponent {
     this.monthSelected = true;
     this.getFilteredIncome();
   }
-  calculateTotalIncome(month: string): number {
+  calculateTotalIncome(month: string): string {
     let totalIncome = 0;
     for(const income of this.getIncomesForMonth(month)){
       totalIncome += income.amount;
     }
-    return totalIncome;
+    return this.formatCurrency(totalIncome);
   }
-  
 
   getIncomesForMonth(month: string): any[] {
     switch(month){
@@ -119,33 +108,30 @@ export class IncomeComponent {
   }
 
   saveForm() {
-    if (this.successMessage) {
-      // Only save to database if there's a new income added
-      const lastAddedIncome = this.getLastAddedIncome();
-      if (lastAddedIncome) {
-        this.saveIncome(lastAddedIncome);
-      }
+    const currentMonthIncomes = this.getIncomesForMonth(this.selectedMonth);
+    if (currentMonthIncomes.length > 0) {
+      this.saveIncomes(currentMonthIncomes);
     } else {
-      this.snackBar.open('No new income to save. Add an income first.', 'Close', {
+      this.snackBar.open('No incomes to save. Add an income first.', 'Close', {
         duration: 3000,
       });
     }
   }
 
-  saveIncome(incomeData: any) {
+  saveIncomes(incomeDataArray: any[]) {
     const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
-    this.http.post('http://localhost:3000/api/income/save-income', incomeData, { headers })
+    this.http.post('http://localhost:3000/api/income/save-incomes', incomeDataArray, { headers })
       .subscribe(
         (response) => {
-          console.log('Income saved successfully', response);
-          this.snackBar.open('Income saved to database successfully!', 'Close', {
+          console.log('Incomes saved successfully', response);
+          this.snackBar.open('All incomes saved to database successfully!', 'Close', {
             duration: 3000,
           });
           this.successMessage = ''; // Clear the success message
         },
         (error) => {
-          console.error('Error saving income:', error);
-          this.snackBar.open('Error saving income to database.', 'Close', {
+          console.error('Error saving incomes:', error);
+          this.snackBar.open('Error saving incomes to database.', 'Close', {
             duration: 3000,
           });
         }
@@ -177,5 +163,10 @@ export class IncomeComponent {
 
   onGetPreviousIncome() {
     this.router.navigate(['/budget-planner/income-list']);
+  }
+
+  // Add this method to format currency
+  formatCurrency(amount: number): string {
+    return `₹${amount.toFixed(2)}`;
   }
 }

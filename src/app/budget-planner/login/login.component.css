@@ -127,3 +127,41 @@ button:active {
 body {
   background-color: #ffffff;
 }
+
+.forgot-password-link {
+  text-align: center;
+  margin-top: 15px;
+}
+
+.forgot-password-link span {
+  color: #FF5A5F;
+  text-decoration: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.forgot-password-link span:hover {
+  text-decoration: underline;
+}
+
+.password-group {
+  position: relative;
+}
+
+.password-group input {
+  padding-right: 40px; /* Make room for the icon */
+}
+
+.password-group i {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #666;
+  font-size: 18px;
+}
+
+.password-group i:hover {
+  color: #333;
+}

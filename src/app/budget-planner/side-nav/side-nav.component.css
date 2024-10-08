@@ -1,8 +1,4 @@
-body{
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+/* Remove body styles as they should be in a global CSS file */
 
 .navbar {
     background-color: #f8f9fa;
@@ -10,7 +6,7 @@ body{
     
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     display: flex;
-    justify-content: flex-start; /* Align items to the left */
+    justify-content: space-between; /* Change to space-between */
     align-items: center;
     position: fixed; /* Change to fixed */
     z-index: 1001; /* Ensure navbar is above the slide-out panel */
@@ -93,7 +89,6 @@ body{
 
   /* Navbar styles */
 
-
   .toggle-button-row {
     cursor: pointer;
     margin-right: 15px;
@@ -107,10 +102,195 @@ body{
     align-items: center;
   }
 
- 
-
   /* Font Awesome icon styles */
   .fa-bars {
     font-size: 1.2rem;
     color: red; /* Changed icon color to red */
+  }
+
+  .navbar-toggler {
+    display: block; /* Always show the toggler */
+    border: none;
+    padding: 0.25rem 0.75rem;
+    font-size: 1.25rem;
+    transition: transform 0.3s ease;
+  }
+
+  .navbar-toggler:hover {
+    transform: scale(1.1);
+  }
+
+  .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 0, 0, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+
+  .sidebar {
+    position: fixed;
+    top: 0;
+    left: -280px;
+    width: 280px;
+    height: 100%;
+    background-color: #343a40;
+    transition: left 0.3s ease-in-out;
+    z-index: 1030;
+    padding-top: 60px;
+  }
+
+  .sidebar.show {
+    left: 0;
+  }
+
+  .sidebar-content {
+    padding: 1.5rem;
+  }
+
+  .sidebar-header {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #495057;
+  }
+
+  .nav-link {
+    color: #adb5bd;
+    transition: all 0.3s ease;
+    padding: 0.5rem 0;
+    cursor: pointer;
+  }
+
+  .nav-link:hover {
+    color: #fff;
+    background-color: #495057;
+    padding-left: 0.5rem;
+  }
+
+  .overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1020;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+  }
+
+  .overlay.show {
+    opacity: 1;
+    visibility: visible;
+  }
+
+  @media (max-width: 991.98px) {
+    .navbar-brand {
+      margin-right: 0;
+    }
+  }
+
+  .container-fluid {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+  }
+
+  .navbar-brand {
+    position: absolute;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .navbar-spacer {
+    width: 40px; /* Same width as the toggle button */
+  }
+
+  .close-sidebar {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.5rem;
+    cursor: pointer;
+    padding: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background-color: rgba(255, 255, 255, 0.1);
+    transition: background-color 0.3s ease;
+  }
+
+  .close-sidebar:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+
+  .close-sidebar .navbar-toggler-icon {
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
+  }
+
+  .sidebar-header {
+    /* ... existing styles ... */
+    padding-right: 40px; /* Add space for the close button */
+  }
+
+  /* Animate.css overrides */
+  .animate__animated {
+    animation-duration: 0.5s;
+  }
+
+  /* Navbar animations */
+  .navbar-brand {
+    animation-delay: 0.5s;
+  }
+
+  .navbar-toggler:hover {
+    animation: pulse 0.5s;
+  }
+
+  /* Sidebar animations */
+  .sidebar .nav-link {
+    animation-delay: calc(0.1s * var(--animation-order));
+  }
+
+  /* Popover customization */
+  .popover {
+    background-color: #343a40;
+    color: #fff;
+  }
+
+  .popover .popover-arrow::after {
+    border-right-color: #343a40;
+  }
+
+  /* Tooltip customization */
+  .tooltip .tooltip-inner {
+    background-color: #343a40;
+    color: #fff;
+  }
+
+  .tooltip .tooltip-arrow::before {
+    border-top-color: #343a40;
+  }
+
+  /* Add smooth transition for hover effects */
+  .nav-link, .navbar-toggler, .close-sidebar {
+    transition: all 0.3s ease;
+  }
+
+  /* Enhance hover effects */
+  .nav-link:hover, .navbar-toggler:hover, .close-sidebar:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  }
+
+  /* Add a subtle gradient background to the sidebar */
+  .sidebar {
+    background: linear-gradient(135deg, #343a40 0%, #23272b 100%);
   }

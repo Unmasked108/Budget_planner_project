@@ -50,6 +50,10 @@ export class IncomeListComponent implements OnInit {
     this.calculateTotalMonthlyIncome();
   }
 
+  formatCurrency(amount: number): string {
+    return `₹${amount.toFixed(2)}`;
+  }
+
   calculateTotalMonthlyIncome() {
     this.totalMonthlyIncome = this.filteredIncomes.reduce((total, income) => total + income.amount, 0);
   }
