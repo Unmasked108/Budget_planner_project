@@ -117,50 +117,58 @@ export class LoginComponent {
   }
 
   submitForgotPassword() {
-    if (this.forgotPasswordForm.valid) {
-      this.http.post('http://localhost:3000/api/users/forgot-password', this.forgotPasswordForm.value).subscribe(
-        response => {
-          console.log('Forgot Password request successful:', response);
-          this.snackBar.open('Password reset link sent to email.', 'Close', { duration: 3000 });
-          this.toggleForm('resetPassword');
-        },
-        error => {
-          console.error('Forgot Password error:', error);
-          this.snackBar.open('Failed to send reset link. Try again.', 'Close', { duration: 3000 });
-        }
-      );
-    } else {
-      this.snackBar.open('Please provide a valid email.', 'Close', { duration: 3000 });
-    }
-  }
-  
-  resetPassword() {
-    if (this.resetPasswordForm.valid) {
-      if (this.resetPasswordForm.value.newPassword !== this.resetPasswordForm.value.confirmPassword) {
-        this.snackBar.open('Passwords do not match.', 'Close', { duration: 3000 });
-        return;
+  if (this.forgotPasswordForm.valid) {
+    this.http.post('http://localhost:3000/api/users/forgot-password', this.forgotPasswordForm.value).subscribe(
+      (response: any) => {
+        console.log('Forgot Password request successful:', response);
+        this.snackBar.open('Password reset link sent to email.', 'Close', { duration: 3000 });
+        
+        // Store the email in forgot password form to reuse in reset password
+        const email = this.forgotPasswordForm.get('email')?.value;
+        this.resetPasswordForm.patchValue({ email: email });
+
+        this.toggleForm('resetPassword');
+      },
+      error => {
+        console.error('Forgot Password error:', error);
+        this.snackBar.open('Failed to send reset link. Try again.', 'Close', { duration: 3000 });
       }
-  
-      const token = this.route.snapshot.queryParamMap.get('token'); // Get token from URL
-      if (!token) {
-        this.snackBar.open('Invalid or missing reset token.', 'Close', { duration: 3000 });
-        return;
-      }
-  
-      this.http.post(`http://localhost:3000/api/users/reset-password/${token}`, this.resetPasswordForm.value)
-        .subscribe(
-          response => {
-            this.snackBar.open('Password reset successfully!', 'Close', { duration: 3000 });
-            this.toggleForm('login');  // Redirect to login form after success
-          },
-          error => {
-            console.error('Password reset error:', error);
-            this.snackBar.open('Password reset failed. Please try again.', 'Close', { duration: 3000 });
-          }
-        );
-    } else {
-      this.snackBar.open('Please fill in all required fields', 'Close', { duration: 3000 });
-    }
+    );
+  } else {
+    this.snackBar.open('Please provide a valid email.', 'Close', { duration: 3000 });
   }
+}
+
   
+resetPassword() {
+  if (this.resetPasswordForm.valid) {
+    if (this.resetPasswordForm.value.newPassword !== this.resetPasswordForm.value.confirmPassword) {
+      this.snackBar.open('Passwords do not match.', 'Close', { duration: 3000 });
+      return;
+    }
+
+    const resetToken = this.route.snapshot.queryParams['token'];  // Extract token from query params
+
+    const payload = {
+      token: resetToken,
+      email: this.resetPasswordForm.value.email,
+      newPassword: this.resetPasswordForm.value.newPassword,
+      confirmPassword: this.resetPasswordForm.value.confirmPassword
+    };
+
+    this.http.post('http://localhost:3000/api/users/reset-password', payload).subscribe(
+      response => {
+        console.log('Password reset successful:', response);
+        this.snackBar.open('Password updated successfully.', 'Close', { duration: 3000 });
+        this.toggleForm('login');
+      },
+      error => {
+        console.error('Password reset error:', error);
+        this.snackBar.open('Password reset failed. Try again.', 'Close', { duration: 3000 });
+      }
+    );
+  } else {
+    this.snackBar.open('Please fill in all required fields.', 'Close', { duration: 3000 });
+  }
+}
 }

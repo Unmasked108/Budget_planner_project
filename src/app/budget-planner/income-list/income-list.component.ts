@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';  
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders} from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule } from '@angular/forms';     
+import { AuthService } from '../auth.service'; // Adjust the path accordingly
 
 @Component({
   selector: 'app-income-list',
@@ -22,7 +23,8 @@ export class IncomeListComponent implements OnInit {
   constructor(
     private http: HttpClient,
     private router: Router,
-    private location: Location
+    private location: Location,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -30,25 +32,54 @@ export class IncomeListComponent implements OnInit {
   }
 
   fetchIncomes() {
-    this.http.get('http://localhost:3000/api/income').subscribe(
-      (response: any) => {
-        this.incomes = response.data;
-        this.extractMonths();
-      },
-      error => {
-        console.error('Error fetching income data:', error);
-      }
-    );
+    const token = this.authService.getToken();
+    if (!token) {
+      console.error('No token found, user is not authenticated');
+      return; // Exit if no token is found
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+    });
+  
+    this.http.get<any>('http://localhost:3000/api/income', { headers })
+      .subscribe(
+        (response) => {
+          console.log('Income data fetched successfully', response);
+          
+          // Assign the fetched income data to the incomes array
+          this.incomes = response.data;
+          
+          // Extract months from the fetched incomes
+          this.extractMonths();
+          
+          // Set filteredIncomes initially to display all incomes
+          this.filteredIncomes = this.incomes;
+  
+          // Calculate the total monthly income for all displayed incomes
+          this.calculateTotalMonthlyIncome();
+        },
+        (error) => {
+          console.error('Error fetching income data:', error);
+        }
+      );
   }
+  
+  
 
   extractMonths() {
     this.months = [...new Set(this.incomes.map(income => income.month))];
   }
 
   filterIncomes() {
-    this.filteredIncomes = this.incomes.filter(income => income.month === this.selectedMonth);
+    this.filteredIncomes = this.selectedMonth
+      ? this.incomes.filter(income => income.month === this.selectedMonth)
+      : this.incomes;
+  
     this.calculateTotalMonthlyIncome();
   }
+  
 
   formatCurrency(amount: number): string {
     return `₹${amount.toFixed(2)}`;

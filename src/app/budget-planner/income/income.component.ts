@@ -3,29 +3,35 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { RouterModule } from '@angular/router';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { AuthService } from '../auth.service'; // Adjust the path accordingly
 
 @Component({
   selector: 'app-income',
   standalone: true,
-  imports: [ReactiveFormsModule,CommonModule],
+  imports: [ReactiveFormsModule, CommonModule],
   templateUrl: './income.component.html',
-  styleUrl: './income.component.css'
+  styleUrls: ['./income.component.css'], // Corrected property from 'styleUrl' to 'styleUrls'
 })
 export class IncomeComponent {
   incomeForm: any;
   selectedMonth: any;
   januaryIncomes: any[] = [];
-
   februaryIncomes: any[] = [];
   marchIncomes: any[] = [];
-
   monthSelected: boolean = false;
   successMessage: string = '';
+  incomes: any[] = []; // Define incomes property
 
-  constructor(public fb: FormBuilder,public router: Router,public http: HttpClient, private snackBar: MatSnackBar) {
+
+  constructor(
+    public fb: FormBuilder,
+    public router: Router,
+
+    private snackBar: MatSnackBar,
+    private http: HttpClient, private authService: AuthService
+  ) {
     const currentDate = new Date();
     this.selectedMonth = currentDate.toLocaleString('default', { month: 'long' });
   }
@@ -35,24 +41,60 @@ export class IncomeComponent {
       month: ['', Validators.required],
       source: ['', Validators.required],
       amount: ['', Validators.required],
-      investments: ['', Validators.required],  // Changed from 'investment' to 'investments'
+      investments: ['', Validators.required],
     });
+
+    // Fetch previous income for the logged-in user
+    this.fetchUserIncomes(); // Added to fetch user incomes on init
   }
+
   onChange(event: any) {
     this.selectedMonth = event.target.value;
     this.monthSelected = true;
     this.getFilteredIncome();
   }
+
   calculateTotalIncome(month: string): string {
     let totalIncome = 0;
-    for(const income of this.getIncomesForMonth(month)){
+    for (const income of this.getIncomesForMonth(month)) {
       totalIncome += income.amount;
     }
     return this.formatCurrency(totalIncome);
   }
-
+  getIncomeData() {
+    const token = this.authService.getToken();  // Ensure token is retrieved correctly
+    if (!token) {
+      console.error('No token found, user is not authenticated');
+      this.snackBar.open('You must be logged in to fetch income data.', 'Close', {
+        duration: 3000,
+      });
+      return; // Exit if not authenticated
+    }
+  
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`,  // Token must be properly included
+      'Content-Type': 'application/json',
+    });
+  
+    this.http.get<any>('http://localhost:3000/api/income', { headers })
+      .subscribe(
+        (response) => {
+          // Handle response and set data properly
+          console.log('Fetched income data:', response);
+          this.incomes = response.data;  // Ensure the data is set correctly to display
+        },
+        (error) => {
+          console.error('Error fetching income data:', error);
+          this.snackBar.open('Error fetching income data.', 'Close', {
+            duration: 3000,
+          });
+        }
+      );
+  }
+  
+  
   getIncomesForMonth(month: string): any[] {
-    switch(month){
+    switch (month) {
       case 'January':
         return this.januaryIncomes;
       case 'February':
@@ -61,12 +103,12 @@ export class IncomeComponent {
         return this.marchIncomes;
       default:
         return [];
-      }
     }
+  }
 
   getFilteredIncome() {
     let filteredIncomes: any[] = [];
-    switch(this.selectedMonth){
+    switch (this.selectedMonth) {
       case 'January':
         filteredIncomes = [...this.januaryIncomes];
         break;
@@ -76,11 +118,12 @@ export class IncomeComponent {
       case 'March':
         filteredIncomes = [...this.marchIncomes];
         break;
-        default:
-          break;
+      default:
+        break;
     }
     return filteredIncomes;
   }
+
   onSubmit() {
     if (this.incomeForm.valid) {
       const newIncome = {
@@ -99,7 +142,7 @@ export class IncomeComponent {
         month: this.selectedMonth,
         source: '',
         amount: '',
-        investments: ''
+        investments: '',
       });
 
       // Set success message
@@ -119,7 +162,11 @@ export class IncomeComponent {
   }
 
   saveIncomes(incomeDataArray: any[]) {
-    const headers = new HttpHeaders({ 'Content-Type': 'application/json' });
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.authService.getToken()}`, // Include the token here
+    });
+  
     this.http.post('http://localhost:3000/api/income/save-incomes', incomeDataArray, { headers })
       .subscribe(
         (response) => {
@@ -137,6 +184,47 @@ export class IncomeComponent {
         }
       );
   }
+  
+  // New method to fetch previous income data for the logged-in user
+  fetchUserIncomes() {
+    const token = this.authService.getToken(); // Get token from AuthService
+    if (!token) {
+      console.error('No token found, user is not authenticated');
+      this.snackBar.open('You must be logged in to fetch income data.', 'Close', {
+        duration: 3000,
+      });
+      return; // Exit if not authenticated
+    }
+  
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${token}`,  // Include the token in headers
+    });
+  
+    this.http
+      .get<{ data: any[] }>('http://localhost:3000/api/income', { headers })
+      .subscribe(
+        (response) => {
+          const incomes = response.data;
+          if (Array.isArray(incomes)) {
+            incomes.forEach((income: any) => {
+              this.addIncomeToLocal(income.month, income);
+            });
+          } else {
+            console.error('Unexpected response format:', response);
+          }
+        },
+        (error) => {
+          console.error('Error fetching income data:', error);
+          this.snackBar.open('Error fetching income data.', 'Close', {
+            duration: 3000,
+          });
+        }
+      );
+  }
+  
+  
+  
 
   getLastAddedIncome(): any {
     const currentMonthIncomes = this.getIncomesForMonth(this.selectedMonth);
@@ -157,7 +245,7 @@ export class IncomeComponent {
     }
   }
 
-  onBack() {    
+  onBack() {
     this.router.navigate(['/budget-planner/dashboard']);
   }
 
