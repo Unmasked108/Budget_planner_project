@@ -1,10 +1,13 @@
 import { Component, OnInit } from '@angular/core';  
-import { HttpClient, HttpHeaders} from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
 import { Location } from '@angular/common';
 import { FormsModule } from '@angular/forms';     
 import { AuthService } from '../auth.service'; // Adjust the path accordingly
+import jsPDF from 'jspdf';  // Changed to default import
+import 'jspdf-autotable';  // Importing the autotable plugin
+import * as Papa from 'papaparse';  // This can remain as is
 
 @Component({
   selector: 'app-income-list',
@@ -19,6 +22,7 @@ export class IncomeListComponent implements OnInit {
   selectedMonth: string = '';
   months: string[] = [];
   totalMonthlyIncome: number = 0;
+  downloadDataType: string = 'all'; // For download selection
 
   constructor(
     private http: HttpClient,
@@ -56,7 +60,7 @@ export class IncomeListComponent implements OnInit {
           
           // Set filteredIncomes initially to display all incomes
           this.filteredIncomes = this.incomes;
-  
+
           // Calculate the total monthly income for all displayed incomes
           this.calculateTotalMonthlyIncome();
         },
@@ -65,8 +69,6 @@ export class IncomeListComponent implements OnInit {
         }
       );
   }
-  
-  
 
   extractMonths() {
     this.months = [...new Set(this.incomes.map(income => income.month))];
@@ -79,7 +81,6 @@ export class IncomeListComponent implements OnInit {
   
     this.calculateTotalMonthlyIncome();
   }
-  
 
   formatCurrency(amount: number): string {
     return `₹${amount.toFixed(2)}`;
@@ -96,4 +97,53 @@ export class IncomeListComponent implements OnInit {
   goToDashboard() {
     this.router.navigate(['/budget-planner/dashboard']);
   }
-}   
+  
+  downloadCSV() {
+    const dataToDownload = this.downloadDataType === 'filtered' ? this.filteredIncomes : this.incomes;
+
+    const csv = Papa.unparse(dataToDownload.map(income => ({
+      Month: income.month,
+      Source: income.source,
+      Amount: this.formatCurrency(income.amount),
+      Investments: income.investments
+    })));
+
+    const blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.setAttribute('download', 'income_data.csv');
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+
+  downloadPDF() {
+    const dataToDownload = this.downloadDataType === 'filtered' ? this.filteredIncomes : this.incomes;
+
+    const doc = new jsPDF();
+
+    // Add title
+    doc.setFontSize(18);
+    doc.text('Income Data', 14, 22);
+    
+    // Add table headers
+    const headers = [['Month', 'Source of Income', 'Amount', 'Investments']];
+    const rows = dataToDownload.map(income => [
+        income.month,
+        income.source,
+        this.formatCurrency(income.amount),
+        income.investments
+    ]);
+
+    // Generate the table
+    (doc as any).autoTable({  // Cast doc to any
+        head: headers,
+        body: rows,
+        startY: 30
+    });
+
+    // Save the PDF
+    doc.save('income_data.pdf');
+}
+}

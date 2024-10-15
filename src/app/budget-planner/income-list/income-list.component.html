@@ -53,7 +53,16 @@
             <strong>Total Income for {{ selectedMonth }}: {{ formatCurrency(totalMonthlyIncome) }}</strong>
         </div>
     </div>
-
+    <div class="download-container">
+        <label for="dataSelect">Download: </label>
+        <select id="dataSelect" [(ngModel)]="downloadDataType">
+            <option value="all">All Data</option>
+            <option value="filtered">Filtered Data</option>
+        </select>
+        <button class="btn" (click)="downloadCSV()">Download as CSV</button>
+        <button class="btn" (click)="downloadPDF()">Download as PDF</button>
+    </div>
+    
     <div class="button-container">
         <button class="btn" (click)="goBack()">Previous</button>
         <button class="btn" (click)="goToDashboard()">Back to Dashboard</button>
